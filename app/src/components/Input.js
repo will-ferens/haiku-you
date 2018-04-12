@@ -21,11 +21,13 @@ class Input extends Component {
                 'Accept': 'application/json'
             },
             method: 'POST',
+            mode: 'no-cors',
             body: JSON.stringify(user)
         }).then(response => {
             console.log(response)
                 fetch('https://haiku-you.herokuapp.com/haiku', {
-                  method: 'GET'
+                  method: 'GET',
+                  mode: 'no-cors',
                 }).then( (response, err) => {
                   if(!err){
                     return response.json()
