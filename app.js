@@ -12,6 +12,7 @@ const haikus = require('./routes/haikus')
 const twiConfig = Twitter(config)
 const app = express()
 
+app.use(app.router)
 app.use(morgan('dev'))
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Output from './Output'
-import './App.css'
+import '../App.css'
 
 
 class Input extends Component {
@@ -15,7 +15,7 @@ class Input extends Component {
         const user = {
             username: this.user.value
         }
-        fetch('http://localhost:8080/user', {
+        fetch('https://haiku-you.herokuapp.com/user', {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -24,7 +24,7 @@ class Input extends Component {
             body: JSON.stringify(user)
         }).then(response => {
             console.log(response)
-                fetch('http://localhost:8080/haiku', {
+                fetch('https://haiku-you.herokuapp.com/haiku', {
                   method: 'GET'
                 }).then( (response, err) => {
                   if(!err){

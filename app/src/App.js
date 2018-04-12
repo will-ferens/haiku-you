@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react'
 import './App.css'
-import Input from './Input'
+import Input from './components/Input'
 
 
 class App extends Component {
