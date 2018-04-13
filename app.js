@@ -23,6 +23,9 @@ app.use('/haikus', haikus)
 app.get('/', (req, res) => {
     res.json('Sunshine and rainbows! 🌈 ☀️')
 })
+app.delete('/haiku', (req, res) => {
+    res.json('Deleted!')
+})
 
 app.post('/user', (req, res) => {
     let userInput = req.body
