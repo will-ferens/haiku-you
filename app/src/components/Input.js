@@ -52,6 +52,7 @@ class Input extends Component {
             return response.json()
         })
     }
+    
     render() {
         return (
         <section>

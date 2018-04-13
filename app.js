@@ -41,7 +41,6 @@ app.post('/user', (req, res) => {
     getTweets(params)
 })
 let arrayOfLines = []
-
 const getTweets = function(searchParams){
     twiConfig.get('statuses/user_timeline', searchParams, (err, data, res) => {
         console.log(err)
@@ -68,6 +67,7 @@ const getTweets = function(searchParams){
 }
 const getHaiku = function(string, syllables) {
     scrubLinks(string)
+    
     let matches = string.match(getHaiku.pattern)
     if (matches == null) return 0
     let currentSyllableCount = matches.length
@@ -82,11 +82,12 @@ const getHaiku = function(string, syllables) {
         let haikuLine = line.join(' ')
         arrayOfLines.push(haikuLine)
     }
+    
 }
 const scrubLinks = function(string) {
     if(string.match(/(?:https?|ftp):\/\/[\n\S]+/g)) {
-        let scrubbed = string.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
-      return scrubbed
+        string.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
+      return string
     } else {
       return string
     }
