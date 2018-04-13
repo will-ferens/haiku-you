@@ -7,7 +7,8 @@ class Input extends Component {
     constructor(props){
         super()
         this.state = {
-            haiku: null
+            haiku: null,
+            
         }
     }
     enterUser(event) {
@@ -15,31 +16,15 @@ class Input extends Component {
         const user = {
             username: this.user.value
         }
-        fetch('https://haiku-you.herokuapp.com/user', {
+        this.setState({user: this.user.value})
+        fetch('http://localhost:8080/user', {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
             method: 'POST',
-            mode: 'no-cors',
             body: JSON.stringify(user)
-        }).then(response => {
-            console.log(response)
-                fetch('https://haiku-you.herokuapp.com/haiku', {
-                  method: 'GET',
-                  mode: 'no-cors',
-                }).then( (response, err) => {
-                  if(!err){
-                    return response.json()
-                  } else {
-                    console.log(err)
-                  }
-                }).then(response => {
-                  this.setState({haiku: response})
-                })
-              
         })
-        
     }
     render() {
         return (
@@ -59,3 +44,21 @@ class Input extends Component {
 }
 
 export default Input
+
+// .then(response => {
+//     console.log(response)
+//         fetch('http://localhost:8080/haikus', {
+//           method: 'GET',
+//           mode: 'no-cors',
+//         }).then( (response, err) => {
+//           if(!err){
+//             console.log(response.json())
+//           } else {
+//             console.log(err)
+//           }
+//         })
+//         .then(response => {
+//           //this.setState({haiku: response})
+//         })
+      
+// })
