@@ -8,6 +8,7 @@ const _ = require('lodash')
 const morgan = require('morgan')
 
 const haikus = require('./routes/haikus')
+const queries = require('./queries')
 
 const twiConfig = Twitter(config)
 const app = express()
@@ -23,15 +24,13 @@ app.use('/haikus', haikus)
 app.get('/', (req, res) => {
     res.json('Sunshine and rainbows! 🌈 ☀️')
 })
-app.delete('/haiku', (req, res) => {
-    res.json('Deleted!')
-})
 
+let arrayOfLines = []
+let formattedHaiku = []
+let arrayOfTweets = []
 app.post('/user', (req, res) => {
-    let userInput = req.body
-    res.send(userInput)
-    let userName = userInput.username
-
+    
+    let userName = req.body.username
     let params = {
         screen_name: userName,
         include_rts: false,
@@ -39,8 +38,8 @@ app.post('/user', (req, res) => {
         exclude_replies: true
     }
     getTweets(params)
+    
 })
-let arrayOfLines = []
 const getTweets = function(searchParams){
     twiConfig.get('statuses/user_timeline', searchParams, (err, data, res) => {
         console.log(err)
@@ -59,48 +58,78 @@ const getTweets = function(searchParams){
             getHaiku(tweet2, 7)
             getHaiku(tweet3, 5)
             
-            arrayOfLines.push(searchParams.screen_name)
-            serveHaiku(arrayOfLines)
+            haikuFormat(arrayOfLines)
+            formattedHaiku.push(searchParams.screen_name)
+            haikuToObject(formattedHaiku)
+            serveHaiku(arrayOfTweets)
         }
-        
     })
 }
 const getHaiku = function(string, syllables) {
-    scrubLinks(string)
-    
-    let matches = string.match(getHaiku.pattern)
-    if (matches == null) return 0
-    let currentSyllableCount = matches.length
-    if (string.match(getHaiku.silentE) != null) currentSyllableCount -= string.match(getHaiku.silentEs).length
-    
-    if(syllables == 5){
-        let line = string.split(/\s+/g).slice(0, 4)
-        let haikuLine = line.join(' ')
-        arrayOfLines.push(haikuLine)
-    } else if(syllables == 7){
-        let line = string.split(/\s+/g).slice(0, 6)
-        let haikuLine = line.join(' ')
-        arrayOfLines.push(haikuLine)
-    }
-    
-}
-const scrubLinks = function(string) {
     if(string.match(/(?:https?|ftp):\/\/[\n\S]+/g)) {
         string.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
-      return string
+        let matches = string.match(getHaiku.pattern)
+        if (matches == null) return 0
+        let currentSyllableCount = matches.length
+        if (string.match(getHaiku.silentE) != null) currentSyllableCount -= string.match(getHaiku.silentEs).length
+        
+        if(syllables == 5){
+            let line = string.split(/\s+/g).slice(0, 4)
+            let haikuLine = line.join(' ')
+            arrayOfLines.push(haikuLine)
+        } else if(syllables == 7){
+            let line = string.split(/\s+/g).slice(0, 6)
+            let haikuLine = line.join(' ')
+            arrayOfLines.push(haikuLine)
+        }
     } else {
-      return string
-    }
+        let matches = string.match(getHaiku.pattern)
+        if (matches == null) return 0
+        let currentSyllableCount = matches.length
+        if (string.match(getHaiku.silentE) != null) currentSyllableCount -= string.match(getHaiku.silentEs).length
+        
+        if(syllables == 5){
+            let line = string.split(/\s+/g).slice(0, 4)
+            let haikuLine = line.join(' ')
+            arrayOfLines.push(haikuLine)
+        } else if(syllables == 7){
+            let line = string.split(/\s+/g).slice(0, 6)
+            let haikuLine = line.join(' ')
+            arrayOfLines.push(haikuLine)
+        }
+    }  
+}
+const haikuFormat = function(array){
+    let format = array.join(' / ')
+    formattedHaiku.push(format)
+}
+const haikuToObject = function(array){
+    let accumulator = {}
+      array.map((current, index) => {  
+      switch(index){
+        case 0:
+          accumulator['haiku'] = current
+          break
+        case 1:
+          accumulator['username'] = current
+          break
+      }
+       return accumulator
+      })
+      arrayOfTweets.push(accumulator)
+}
+const serveHaiku = function(haikuBody){
+    app.post("/haikus", (request, response, next) => {
+        queries.create(haikuBody).then(haiku => {
+            console.log('ass')
+            response.status(201).json({haiku: haiku})
+        }).catch(next)
+    })
 }
 
 getHaiku.pattern  = new RegExp("[aeiouy]([^aieouy]|$)", 'gim') 
 getHaiku.silentE  = new RegExp("[aeiouy][^aeiouy]e([^a-z]s|[^a-z]|$)", 'i') 
 getHaiku.silentEs = new RegExp("[aeiouy][^aeiouy]e([^a-z]s|[^a-z]|$)", 'gim') 
 
-const serveHaiku = function(haiku) {
-    app.get('/haiku', (req, res) => {
-        res.json(haiku)
-    })
-}
-
 app.listen(process.env.PORT || 8080)
+

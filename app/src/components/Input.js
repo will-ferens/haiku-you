@@ -7,8 +7,7 @@ class Input extends Component {
     constructor(props){
         super()
         this.state = {
-            haiku: null,
-            
+            haiku: '',
         }
     }
     enterUser(event) {
@@ -17,29 +16,33 @@ class Input extends Component {
             username: this.user.value
         }
         this.setState({user: this.user.value})
-        fetch('https://haiku-you.herokuapp.com/user', {
+        fetch('http://localhost:8080/user', {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
             method: 'POST',
             body: JSON.stringify(user)
-        }).then(response => {
-            console.log(response)
-                fetch('https://haiku-you.herokuapp.com/haiku', {
-                  method: 'GET'
-                }).then( (response, err) => {
-                  if(!err){
-                    return response.json()
-                  } else {
-                    console.log(err)
-                  }
-                })
-                .then(response => {
-                  this.setState({haiku: response})
-                }) 
-        })  
+        }).then((response, err) => {
+            if(!err){
+                return response.json()
+            }
+        })
     }
+    getHaikus(event) {
+        fetch('http://localhost:8080/haiku', {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            method: 'GET'
+        }).then((response, err) => {
+            return response.json()
+        }).then(response => {
+            this.setState({haiku: response})
+        })
+    }
+   
     deleteHaikus(event){
         event.preventDefault()
         fetch('https://haiku-you.herokuapp.com/haiku', {
@@ -61,10 +64,17 @@ class Input extends Component {
                     <input ref={(input) => this.user = input} type="text" htmlFor="username" name="username" />
                     <input type="submit" id="submit-button" />
                 </form>
-                <button type="delete" id="delete-button" onClick={(event) => this.deleteHaikus(event)}>Delete Haikus</button>
+                {/*<button type="delete" id="delete-button" onClick={(event) => this.deleteHaikus(event)}>Delete Haikus</button>*/}
+                <button type="get" id="get-button" onClick={(event) => this.getHaikus(event)}>Get Haikus</button>
             </div>
             <div className="output">
-                <Output userHaiku={this.state.haiku} />
+                <ul>
+                {
+                    Object.keys(this.state.haiku)
+                    .map(key => <Output key={key} haiku={this.state.haiku[key]}/>)
+                }
+                
+                </ul>
             </div>
         </section>
         )

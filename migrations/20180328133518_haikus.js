@@ -1,7 +1,7 @@
 
 exports.up = function(knex, Promise) {
     return Promise.all([
-        knex.schema.createTable('tweets', (table) => {
+        knex.schema.createTable('haikus', (table) => {
             table.increments('id').primary()
             table.text('username')
             table.text('haiku')
