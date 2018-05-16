@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import Output from './Output'
 import '../App.css'
-
+import _ from 'lodash'
 
 class Input extends Component {
     constructor(props){
         super()
         this.state = {
+            tweets: [],
             haiku: '',
         }
     }
@@ -28,35 +29,64 @@ class Input extends Component {
                 return response.json()
             }
         })
-    }
-    getHaikus(event) {
-        fetch('http://localhost:8080/haiku', {
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            method: 'GET'
-        }).then((response, err) => {
-            return response.json()
-        }).then(response => {
-            this.setState({haiku: response})
+        .then(tweets => {
+            this.setState({tweets: tweets})
         })
     }
-   
-    deleteHaikus(event){
-        event.preventDefault()
-        fetch('https://haiku-you.herokuapp.com/haiku', {
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            method: 'DELETE'
-        }).then(response => {
-            return response.json()
-        })
+    getHaiku(event) {
+        let tweet1 = _.sample(this.state.tweets)
+        let tweet2 = _.sample(this.state.tweets)
+        let tweet3 = _.sample(this.state.tweets)
+
+        
+        getHaiku(tweet1, 5)
+        getHaiku(tweet2, 7)
+        getHaiku(tweet3, 5)
+        
     }
     
+    
     render() {
+        const getHaiku = function(string, syllables) {
+            let yourHaiku = []
+            if(string.match(/(?:https?|ftp):\/\/[\n\S]+/g)) {
+                string.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
+                let matches = string.match(getHaiku.pattern)
+                if (matches == null) return 0
+                let currentSyllableCount = matches.length
+                if (string.match(getHaiku.silentE) != null) currentSyllableCount -= string.match(getHaiku.silentEs).length
+                
+                if(syllables == 5){
+                    let line = string.split(/\s+/g).slice(0, 4)
+                    let haikuLine = line.join(' ')
+                    yourHaiku.push(haikuLine)
+                } else if(syllables == 7){
+                    let line = string.split(/\s+/g).slice(0, 6)
+                    let haikuLine = line.join(' ')
+                    yourHaiku.push(haikuLine)
+                }
+            } else {
+                let matches = string.match(getHaiku.pattern)
+                if (matches == null) return 0
+                let currentSyllableCount = matches.length
+                if (string.match(getHaiku.silentE) != null) currentSyllableCount -= string.match(getHaiku.silentEs).length
+                
+                if(syllables == 5){
+                    let line = string.split(/\s+/g).slice(0, 4)
+                    let haikuLine = line.join(' ')
+                    yourHaiku.push(haikuLine)
+                } else if(syllables == 7){
+                    let line = string.split(/\s+/g).slice(0, 6)
+                    let haikuLine = line.join(' ')
+                    yourHaiku.push(haikuLine)
+                }
+            } 
+            console.log(yourHaiku) 
+        }
+
+        getHaiku.pattern  = new RegExp("[aeiouy]([^aieouy]|$)", 'gim') 
+        getHaiku.silentE  = new RegExp("[aeiouy][^aeiouy]e([^a-z]s|[^a-z]|$)", 'i') 
+        getHaiku.silentEs = new RegExp("[aeiouy][^aeiouy]e([^a-z]s|[^a-z]|$)", 'gim') 
         return (
         <section>
             <div className="input">
@@ -64,8 +94,7 @@ class Input extends Component {
                     <input ref={(input) => this.user = input} type="text" htmlFor="username" name="username" />
                     <input type="submit" id="submit-button" />
                 </form>
-                {/*<button type="delete" id="delete-button" onClick={(event) => this.deleteHaikus(event)}>Delete Haikus</button>*/}
-                <button type="get" id="get-button" onClick={(event) => this.getHaikus(event)}>Get Haikus</button>
+                <button type="get" id="get-button" onClick={(event) => this.getHaiku(event)}>Generate a Haiku</button>
             </div>
             <div className="output">
                 <ul>
@@ -73,7 +102,6 @@ class Input extends Component {
                     Object.keys(this.state.haiku)
                     .map(key => <Output key={key} haiku={this.state.haiku[key]}/>)
                 }
-                
                 </ul>
             </div>
         </section>
