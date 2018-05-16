@@ -8,7 +8,9 @@ class Input extends Component {
         super()
         this.state = {
             tweets: [],
-            haiku: '',
+            haiku: [],
+            hidden: true,
+            visible: false
         }
     }
     enterUser(event) {
@@ -30,83 +32,81 @@ class Input extends Component {
             }
         })
         .then(tweets => {
-            this.setState({tweets: tweets})
+            this.setState({
+                tweets: tweets,
+                hidden: false,
+            })
         })
     }
-    getHaiku(event) {
-        let tweet1 = _.sample(this.state.tweets)
-        let tweet2 = _.sample(this.state.tweets)
-        let tweet3 = _.sample(this.state.tweets)
+    
+    getHaiku = (array) => {
+        
+        let tweet1 = _.sample(array)
+        let tweet2 = _.sample(array)
+        let tweet3 = _.sample(array)
 
+        let line1 = createHaiku5(tweet1)
+        let line2 = createHaiku7(tweet2)
+        let line3 = createHaiku5(tweet3)
+
+        let yourHaiku = [line1, line2, line3]
+
+        this.setState({
+            haiku: yourHaiku,
+            visible: true
+        })
+        console.log(this.state.haiku)
+        function createHaiku5(tweet) {
+            let pattern  = /[aeiouy]([^aieouy]|$)/gim
+            let silentE  = /[aeiouy][^aeiouy]e([^a-z]s|[^a-z]|$)/i
+            let silentEs = /[aeiouy][^aeiouy]e([^a-z]s|[^a-z]|$)/gim 
+    
+            let matches = tweet.match(pattern)
+            if (matches == null) return 0
+            let currentSyllableCount = matches.length
+            if (tweet.match(silentE) != null) currentSyllableCount -= tweet.match(silentEs).length
+            
+            let line = tweet.split(/\s+/g).slice(0, 4)
+            let haikuLine = line.join(' ')
+
+            return haikuLine
+        }
         
-        getHaiku(tweet1, 5)
-        getHaiku(tweet2, 7)
-        getHaiku(tweet3, 5)
-        
+        function createHaiku7(tweet) {
+            let pattern  = /[aeiouy]([^aieouy]|$)/gim
+            let silentE  = /[aeiouy][^aeiouy]e([^a-z]s|[^a-z]|$)/i
+            let silentEs = /[aeiouy][^aeiouy]e([^a-z]s|[^a-z]|$)/gim 
+    
+            let matches = tweet.match(pattern)
+            if (matches == null) return 0
+            let currentSyllableCount = matches.length
+            if (tweet.match(silentE) != null) currentSyllableCount -= tweet.match(silentEs).length
+    
+            let line = tweet.split(/\s+/g).slice(0, 6)
+            let haikuLine = line.join(' ')
+
+            return haikuLine
+        }
     }
+
+    
+    
     
     
     render() {
-        const getHaiku = function(string, syllables) {
-            let yourHaiku = []
-            if(string.match(/(?:https?|ftp):\/\/[\n\S]+/g)) {
-                string.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
-                let matches = string.match(getHaiku.pattern)
-                if (matches == null) return 0
-                let currentSyllableCount = matches.length
-                if (string.match(getHaiku.silentE) != null) currentSyllableCount -= string.match(getHaiku.silentEs).length
-                
-                if(syllables == 5){
-                    let line = string.split(/\s+/g).slice(0, 4)
-                    let haikuLine = line.join(' ')
-                    yourHaiku.push(haikuLine)
-                } else if(syllables == 7){
-                    let line = string.split(/\s+/g).slice(0, 6)
-                    let haikuLine = line.join(' ')
-                    yourHaiku.push(haikuLine)
-                }
-            } else {
-                let matches = string.match(getHaiku.pattern)
-                if (matches == null) return 0
-                let currentSyllableCount = matches.length
-                if (string.match(getHaiku.silentE) != null) currentSyllableCount -= string.match(getHaiku.silentEs).length
-                
-                if(syllables == 5){
-                    let line = string.split(/\s+/g).slice(0, 4)
-                    let haikuLine = line.join(' ')
-                    yourHaiku.push(haikuLine)
-                } else if(syllables == 7){
-                    let line = string.split(/\s+/g).slice(0, 6)
-                    let haikuLine = line.join(' ')
-                    yourHaiku.push(haikuLine)
-                }
-            } 
-            console.log(yourHaiku) 
-        }
-
-        getHaiku.pattern  = new RegExp("[aeiouy]([^aieouy]|$)", 'gim') 
-        getHaiku.silentE  = new RegExp("[aeiouy][^aeiouy]e([^a-z]s|[^a-z]|$)", 'i') 
-        getHaiku.silentEs = new RegExp("[aeiouy][^aeiouy]e([^a-z]s|[^a-z]|$)", 'gim') 
         return (
-        <section>
+        <section className="user-side">
             <div className="input">
                 <form ref={(input) => this.userForm = input} className="userName" onSubmit={(event) => this.enterUser(event)}>
                     <input ref={(input) => this.user = input} type="text" htmlFor="username" name="username" />
                     <input type="submit" id="submit-button" />
                 </form>
-                <button type="get" id="get-button" onClick={(event) => this.getHaiku(event)}>Generate a Haiku</button>
+                {this.state.hidden ? "" : <button type="get" id="get-button" onClick={() => this.getHaiku(this.state.tweets)}>Generate a Haiku</button>}
             </div>
-            <div className="output">
-                <ul>
-                {
-                    Object.keys(this.state.haiku)
-                    .map(key => <Output key={key} haiku={this.state.haiku[key]}/>)
-                }
-                </ul>
-            </div>
+                <Output haiku={this.state.haiku} visible={this.state.visible}/>
         </section>
         )
-  }
+    }
 }
 
 export default Input

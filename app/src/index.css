@@ -3,3 +3,35 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+/* HEADER =================================== */
+header {
+  display: flex;
+  justify-content: flex-start;
+  height: 20vh;
+  width: 100vw;
+}
+
+/* INPUT =================================== */
+
+.user-side {
+  display: flex;
+  text-align: left;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 80vh;
+  width: 50vw;
+}
+
+/* OUTPUT =================================== */
+.haiku-card {
+  display: flex;
+  justify-content: flex-start;
+  text-align: left;
+}
+#haiku-list {
+  list-style: none;
+  padding: 0;
+}
+
+/* HAIKU =================================== */

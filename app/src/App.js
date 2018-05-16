@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import './App.css'
 import Input from './components/Input'
-
+import Header from './components/Header'
 
 class App extends Component {
   constructor() {
@@ -14,8 +14,8 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-       <h1>Haiku You</h1>
-       <Input />
+        <Header />
+        <Input />
       </div>
     )
   }
