@@ -10,7 +10,8 @@ class Input extends Component {
             tweets: [],
             haiku: [],
             hidden: true,
-            visible: false
+            visible: false,
+            user: ''
         }
     }
     enterUser(event) {
@@ -19,7 +20,7 @@ class Input extends Component {
             username: this.user.value
         }
         this.setState({user: this.user.value})
-        fetch('http://localhost:8080/user', {
+        fetch('http://localhost:8089/user', {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -89,9 +90,7 @@ class Input extends Component {
         }
     }
 
-    
-    
-    
+    // CRUD functionality on username, second table tweets sent
     
     render() {
         return (

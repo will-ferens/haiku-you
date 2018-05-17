@@ -6,24 +6,23 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
 
-const haikus = require('./routes/haikus')
-const queries = require('./queries')
-
 const twiConfig = Twitter(config)
 const app = express()
+
+const username = require("./routes/usernames")
+const input = require('./routes/inputs')
 
 app.use(morgan('dev'))
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
-
-app.use('/haikus', haikus)
-
 app.get('/', (req, res) => {
     res.json('Sunshine and rainbows! 🌈 ☀️')
 })
 
+app.use("/usernames", username)
+app.use('/inputs', input)
 
 app.post('/user', (req, res) => {
     
@@ -57,5 +56,5 @@ const getTweets = function(searchParams){
     })
 }
 
-app.listen(process.env.PORT || 8080)
+app.listen(process.env.PORT || 8089)
 

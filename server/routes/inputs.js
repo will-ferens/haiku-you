@@ -1,27 +1,26 @@
 const express = require('express')
 const router = express.Router()
 
-const queries = require('../queries')
+const queries = require('../queriesInputs')
 
 router.get('/', (req, res, next) => {
-    queries.list().then(haikus => {
-        res.json({haikus})
+    queries.list().then(input => {
+        res.json({input})
+    }).catch(next)
+})
+router.get("/:id", (request, response, next) => {
+    queries.read(request.params.id).then(input => {
+        input
+            ? response.json({input})
+            : response.status(404).json({message: 'Not found'})
     }).catch(next)
 })
 
-router.get("/:id", (request, response, next) => {
-    queries.read(request.params.id).then(haiku => {
-        haiku
-            ? response.json({haiku})
-            : response.status(404).json({message: 'Not found'})
-    }).catch(next)
-});
-
 router.post("/", (request, response, next) => {
-    queries.create(request.body).then(haiku => {
-        response.status(201).json({haiku: haiku})
+    queries.create(request.body).then(input => {
+        response.status(201).json({input: input})
     }).catch(next)
-});
+})
 
 router.delete("/:id", (request, response, next) => {
     queries.delete(request.params.id).then(() => {
@@ -30,8 +29,8 @@ router.delete("/:id", (request, response, next) => {
 })
 
 router.put("/:id", (request, response, next) => {
-    queries.update(request.params.id, request.body).then(haiku => {
-        response.json({haiku: haiku[0]})
+    queries.update(request.params.id, request.body).then(input => {
+        response.json({input: input[0]})
     }).catch(next)
 })
 module.exports = router
