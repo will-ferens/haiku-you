@@ -8,7 +8,7 @@ class Output extends Component {
             userHaiku: '',  
         }
     }
-   
+
     render () {
             return (
             <div className="haiku-card">

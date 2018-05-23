@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Output from './Output'
+import TwitterStream from './TwitterStream'
 import '../App.css'
 import _ from 'lodash'
 
@@ -11,7 +12,8 @@ class Input extends Component {
             haiku: [],
             hidden: true,
             visible: false,
-            user: ''
+            user: '',
+            error: ''
         }
     }
     enterUser(event) {
@@ -19,7 +21,9 @@ class Input extends Component {
         const user = {
             username: this.user.value
         }
-        this.setState({user: this.user.value})
+        this.setState({
+            user: this.user.value,
+        })
         fetch('http://localhost:8089/user', {
             headers: {
                 'Content-Type': 'application/json',
@@ -30,14 +34,22 @@ class Input extends Component {
         }).then((response, err) => {
             if(!err){
                 return response.json()
-            }
+            } 
         })
-        .then(tweets => {
-            this.setState({
+        .then((tweets, err) => {
+            if(!err)
+                this.setState({
                 tweets: tweets,
                 hidden: false,
+                error: 'none'
             })
         })
+        .catch(err => {
+            this.setState({
+                error: 'error',
+            })
+        })
+        
     }
     
     getHaiku = (array) => {
@@ -56,53 +68,79 @@ class Input extends Component {
             haiku: yourHaiku,
             visible: true
         })
-        console.log(this.state.haiku)
+
         function createHaiku5(tweet) {
+            let scrubbedLink = scrubLinks(tweet)
+
             let pattern  = /[aeiouy]([^aieouy]|$)/gim
             let silentE  = /[aeiouy][^aeiouy]e([^a-z]s|[^a-z]|$)/i
             let silentEs = /[aeiouy][^aeiouy]e([^a-z]s|[^a-z]|$)/gim 
     
-            let matches = tweet.match(pattern)
+            let matches = scrubbedLink.match(pattern)
             if (matches == null) return 0
             let currentSyllableCount = matches.length
-            if (tweet.match(silentE) != null) currentSyllableCount -= tweet.match(silentEs).length
+            if (scrubbedLink.match(silentE) != null) currentSyllableCount -= scrubbedLink.match(silentEs).length
             
-            let line = tweet.split(/\s+/g).slice(0, 4)
+            let line = scrubbedLink.split(/\s+/g).slice(0, 4)
             let haikuLine = line.join(' ')
 
             return haikuLine
         }
         
         function createHaiku7(tweet) {
+            let scrubbedLink = scrubLinks(tweet)
+
             let pattern  = /[aeiouy]([^aieouy]|$)/gim
             let silentE  = /[aeiouy][^aeiouy]e([^a-z]s|[^a-z]|$)/i
             let silentEs = /[aeiouy][^aeiouy]e([^a-z]s|[^a-z]|$)/gim 
     
-            let matches = tweet.match(pattern)
+            let matches = scrubbedLink.match(pattern)
             if (matches == null) return 0
             let currentSyllableCount = matches.length
-            if (tweet.match(silentE) != null) currentSyllableCount -= tweet.match(silentEs).length
+            if (scrubbedLink.match(silentE) != null) currentSyllableCount -= scrubbedLink.match(silentEs).length
     
-            let line = tweet.split(/\s+/g).slice(0, 6)
+            let line = scrubbedLink.split(/\s+/g).slice(0, 6)
             let haikuLine = line.join(' ')
 
             return haikuLine
         }
+
+        function scrubLinks(string){
+            let linkPattern = /(http|https):\/\/(\S+)\.([a-z]{2,}?)(.*?)( |\,|$|\.)/gim
+            
+            return string.replace(linkPattern, '')
+        }
+    }
+    
+    errorHandle(error) {
+        switch(error) {
+        case "error":
+            return <h4>Please enter a valid, public username!</h4>
+        case "none":
+            return <button type="get" id="get-button" onClick={() => this.getHaiku(this.state.tweets)}>Generate a Haiku</button>
+        default:
+            return <div/>
+        }
+
     }
 
-    // CRUD functionality on username, second table tweets sent
-    
     render() {
+        
         return (
-        <section className="user-side">
-            <div className="input">
-                <form ref={(input) => this.userForm = input} className="userName" onSubmit={(event) => this.enterUser(event)}>
-                    <input ref={(input) => this.user = input} type="text" htmlFor="username" name="username" />
-                    <input type="submit" id="submit-button" />
-                </form>
-                {this.state.hidden ? "" : <button type="get" id="get-button" onClick={() => this.getHaiku(this.state.tweets)}>Generate a Haiku</button>}
-            </div>
-                <Output haiku={this.state.haiku} visible={this.state.visible}/>
+        <section className="main">
+            <section className="user-side">
+                <div className="input">
+                    <form ref={(input) => this.userForm = input} className="userName" onSubmit={(event) => this.enterUser(event)}>
+                        <input ref={(input) => this.user = input} type="text" htmlFor="username" name="username" />
+                        <input type="submit" id="submit-button" />
+                    </form>
+                    {this.errorHandle(this.state.error)}
+                </div>
+                    <Output haiku={this.state.haiku} visible={this.state.visible}/>
+            </section>
+            <section className="twitter-side"> 
+                <TwitterStream />
+            </section>
         </section>
         )
     }

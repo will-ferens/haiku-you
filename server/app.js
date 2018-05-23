@@ -37,6 +37,8 @@ app.post('/user', (req, res) => {
     
     tweets.then(value => {
         res.send(value)
+    }).catch(err => {
+        res.status(401).send(err.message)
     })
 })
 
@@ -44,7 +46,10 @@ const getTweets = function(searchParams){
     return new Promise ((resolve, reject) => {
         twiConfig.get('statuses/user_timeline', searchParams, (err, data, res) => {
             console.log(err)
-            if(!err) {
+            if(err) {
+                reject(err)
+            } else
+            {
                 let tweets = JSON.parse(res.body)
                 let result = tweets.reduce((accumulater, current) => {
                     accumulater.push(current.text)
@@ -55,6 +60,9 @@ const getTweets = function(searchParams){
         })
     })
 }
+
+
+
 
 app.listen(process.env.PORT || 8089)
 
