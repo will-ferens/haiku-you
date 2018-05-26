@@ -9,8 +9,6 @@ const morgan = require('morgan')
 const twiConfig = Twitter(config)
 const app = express()
 
-const username = require("./routes/usernames")
-const input = require('./routes/inputs')
 
 app.use(morgan('dev'))
 app.use(cors())
@@ -21,8 +19,6 @@ app.get('/', (req, res) => {
     res.json('Sunshine and rainbows! 🌈 ☀️')
 })
 
-app.use("/usernames", username)
-app.use('/inputs', input)
 
 app.post('/user', (req, res) => {
     
@@ -33,16 +29,17 @@ app.post('/user', (req, res) => {
         count: 200,
         exclude_replies: true
     }
-    let tweets = getTweets(params)
-    
-    tweets.then(value => {
+
+    getTweets(params)    
+    .then(value => {
         res.send(value)
-    }).catch(err => {
+    })
+    .catch(err => {
         res.status(401).send(err.message)
     })
 })
 
-const getTweets = function(searchParams){
+const getTweets = (searchParams) => {
     return new Promise ((resolve, reject) => {
         twiConfig.get('statuses/user_timeline', searchParams, (err, data, res) => {
             console.log(err)
@@ -61,6 +58,32 @@ const getTweets = function(searchParams){
     })
 }
 
+app.post('/haiku', (req, res) => {
+
+    let userHaiku = req.body.input
+    let params = {status: userHaiku}
+
+    postHaiku(params)
+    .then(value => {
+        res.send(value)
+    })
+    .catch(err => {
+        res.send(err.message)
+    })
+})
+
+const postHaiku = (tweetParams) => {
+    return new Promise ((resolve, reject) => {
+        twiConfig.post('statuses/update', tweetParams, (err, data, res) => {
+            if(err){
+                reject(err)
+            } else {
+                resolve(res)
+            }
+        })
+    })
+    
+}
 
 
 
