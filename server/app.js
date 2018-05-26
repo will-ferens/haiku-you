@@ -61,7 +61,14 @@ const getTweets = (searchParams) => {
 app.post('/haiku', (req, res) => {
 
     let userHaiku = req.body.input
-    let params = {status: userHaiku}
+
+    const addLineBreaks = (string) => {
+        return string.replace(/\,/g, '\n')
+    }
+
+    let formattedHaiku = addLineBreaks(userHaiku)
+
+    let params = {status: formattedHaiku}
 
     postHaiku(params)
     .then(value => {

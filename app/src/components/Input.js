@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Output from './Output'
 import TwitterStream from './TwitterStream'
-import '../App.css'
+
 import _ from 'lodash'
 
 class Input extends Component {

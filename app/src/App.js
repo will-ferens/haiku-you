@@ -1,8 +1,9 @@
 
 import React, { Component } from 'react'
-import './App.css'
+
 import Input from './components/Input'
 import Header from './components/Header'
+import Footer from './components/Footer'
 
 class App extends Component {
   constructor() {
@@ -16,6 +17,7 @@ class App extends Component {
       <div className="App">
         <Header />
         <Input />
+        <Footer />
       </div>
     )
   }
