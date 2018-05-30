@@ -1,37 +1,31 @@
 body {
-  margin: 0;
-  padding: 0;
   font-family: sans-serif;
 }
 
+.App {
+  display: grid;
+  grid-template-columns: 3% 45% 45% 3%;
+  grid-gap: 2%;
+}
 /* HEADER =================================== */
 header {
-  display: flex;
-  justify-content: flex-start;
-  height: 20vh;
-  width: 100vw;
+  grid-column: 2 / 4;
+  grid-row: 1;
 }
 
 .main{
-  display: flex;
-  flex-direction: row;
+  grid-column: 2;
+  grid-row: 2;
 }
 /* INPUT =================================== */
 
 .user-side {
-  display: flex;
-  text-align: left;
-  flex-direction: column;
-  justify-content: flex-start;
-  height: 80vh;
-  width: 48vw;
-
+  grid-column: 2;
+  grid-row: 2;
 }
 
 /* OUTPUT =================================== */
 .haiku-card {
-  display: flex;
-  justify-content: flex-start;
   text-align: left;
 }
 #haiku-list {
@@ -41,13 +35,39 @@ header {
 
 /* HAIKU =================================== */
 
-.twitter-side {
-  display: flex;
-  flex-direction: column;
-  height: 80vh;
-  width: 48vw;
-}
-.twitter-stream {
-  display: flex;
 
+.twitter-stream {
+  grid-column: 3;
+  grid-row: 2;
+
+}
+
+footer {
+  grid-column: 2 / 4;
+  grid-row: 3;
+}
+
+@media screen and (max-width: 979px) {
+  header {
+    text-align: center;
+  }
+  .main{
+    grid-column: 2 / 4;
+    grid-row: 2;
+    text-align: center;
+  }
+  
+  .user-side {
+    grid-column: 2 / 4;
+    grid-row: 2;
+  }
+
+  .twitter-stream {
+    grid-column: 2/ 4;
+    grid-row: 3;
+  
+  }
+  footer {
+    grid-row: 4;
+  }
 }

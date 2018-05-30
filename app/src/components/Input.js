@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Output from './Output'
 import TwitterStream from './TwitterStream'
+import Instructions from './Instructions'
 
 import _ from 'lodash'
 
@@ -10,10 +11,11 @@ class Input extends Component {
         this.state = {
             tweets: [],
             haiku: [],
-            hidden: true,
-            visible: false,
+            hiddenEditButton: true,
+            visibleHaiku: false,
             user: '',
-            error: ''
+            error: '',
+            renderInstructions: 1
         }
     }
     enterUser(event) {
@@ -40,7 +42,7 @@ class Input extends Component {
             if(!err)
                 this.setState({
                 tweets: tweets,
-                hidden: false,
+                hiddenEditButton: false,
                 error: 'none'
             })
         })
@@ -66,7 +68,8 @@ class Input extends Component {
 
         this.setState({
             haiku: yourHaiku,
-            visible: true
+            visibleHaiku: true,
+            renderInstructions: 2
         })
 
         function createHaiku5(tweet) {
@@ -121,7 +124,12 @@ class Input extends Component {
         default:
             return <div/>
         }
+    }
 
+    passRenderInstructions = (instructionNumber) => {
+        this.setState({
+            renderInstructions: instructionNumber
+        })
     }
 
     render() {
@@ -129,6 +137,7 @@ class Input extends Component {
         return (
         <section className="main">
             <section className="user-side">
+                <Instructions render={this.state.renderInstructions} />
                 <div className="input">
                     <form ref={(input) => this.userForm = input} className="userName" onSubmit={(event) => this.enterUser(event)}>
                         <input ref={(input) => this.user = input} type="text" htmlFor="username" name="username" />
@@ -136,10 +145,7 @@ class Input extends Component {
                     </form>
                     {this.errorHandle(this.state.error)}
                 </div>
-                    <Output haiku={this.state.haiku} visible={this.state.visible}/>
-            </section>
-            <section className="twitter-side"> 
-                <TwitterStream />
+                    <Output passRenderInstructions={this.passRenderInstructions} haiku={this.state.haiku} visible={this.state.visibleHaiku}/>
             </section>
         </section>
         )

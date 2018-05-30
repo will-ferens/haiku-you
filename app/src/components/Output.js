@@ -12,7 +12,7 @@ class Output extends Component {
     render () {
             return (
             <div className="haiku-card">
-                <Haiku haiku={this.props.haiku} visible={this.props.visible}/>
+                <Haiku passRenderInstructions={this.props.passRenderInstructions} haiku={this.props.haiku} visible={this.props.visible}/>
             </div>
         )  
     } 
