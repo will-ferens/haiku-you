@@ -140,7 +140,7 @@ class Input extends Component {
         
         return (
         <section className="main">
-            <section className="user-side">
+            <section className="user-side" className="enter">
                 <Instructions render={this.state.renderInstructions} />
                 <div className="input">
                     <form ref={(input) => this.userForm = input} 
@@ -150,11 +150,12 @@ class Input extends Component {
                         type="text" htmlFor="username" 
                         name="username" id="username" />
                         <button 
-                        type="submit" id="submit-button" >LET'S GO</button>
+                        type="submit" id="submit-button" className="enter">Start</button>
                     </form>
                     {this.errorHandle(this.state.error)}
                 </div>
-                    <Output passRenderInstructions={this.passRenderInstructions} 
+                    <Output 
+                    passRenderInstructions={this.passRenderInstructions} 
                     haiku={this.state.haiku} 
                     visible={this.state.visibleHaiku} />
             </section>

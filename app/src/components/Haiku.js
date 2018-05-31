@@ -40,9 +40,11 @@ class Haiku extends Component {
                 {this.props.visible && <h4>Your Haiku:</h4>}
                 
                 {this.state.isEditVisible ?( 
-                    <textarea defaultValue={this.props.haiku} 
+                    <textarea 
+                    className="user-haiku"
+                    defaultValue={this.props.haiku} 
                     onChange={(e) => {this.setHaiku(e)}} ref={(input) => {this.value = input}} ></textarea>) :
-                <ul id="haiku-list">
+                <ul id="haiku-list" className="enter">
                     <li className="haiku-list-item">{this.props.haiku[0]}</li>
                     <li className="haiku-list-item">{this.props.haiku[1]}</li>
                     <li className="haiku-list-item">{this.props.haiku[2]}</li>
@@ -53,7 +55,8 @@ class Haiku extends Component {
                     onClick={() => 
                         {this.handleHaiku(this.state.userHaiku)
                         }}
-                        className="button">TWEET</button>
+                        className="button" 
+                        id="tweet-button">Tweet</button>
                 ) : 
                     this.props.visible && 
                     <button 
@@ -63,12 +66,12 @@ class Haiku extends Component {
                             ${this.props.haiku[1]}, 
                             ${this.props.haiku[2]}`)
                         }}
-                    className="button">TWEET</button>}
+                    className="button">Tweet</button>}
 
                 {this.props.visible && 
                     <button 
                     onClick={this.toggleEdit}
-                    className="button">EDIT</button>}    
+                    className="button" id="edit-button">Edit</button>}    
             </div>
         )  
     } 
