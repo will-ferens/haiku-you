@@ -1,6 +1,9 @@
 body {
-  font-family: sans-serif;
+  font-family: 'Helvetica Neue', Helvetica;
+  font-weight: 250;
+  background-color: white;
 }
+
 
 .App {
   display: grid;
@@ -16,12 +19,49 @@ header {
 .main{
   grid-column: 2;
   grid-row: 2;
+  background-color: #A8AAFF;
+  padding: 5px;
+  border: 1px solid #6C6EC1;
+  border-radius: 1%;
 }
 /* INPUT =================================== */
 
 .user-side {
   grid-column: 2;
   grid-row: 2;
+
+}
+
+#username {
+  border: none;
+  border-bottom: 1px solid black;
+  width: 150px;
+  background: transparent;
+}
+
+#submit-button {
+  width: 100px;
+  color: white;
+  background-color: #353774;
+  border: none;
+  font-weight: 100;
+  font-kerning: 300;
+  margin-left: 3px;
+}
+
+.button {
+  width: 100px;
+  color: white;
+  background-color: #353774;
+  border: none;
+  margin: 3px;
+  margin-left: none;
+}
+.button:hover {
+  background-color: transparent;
+  color: #353774;
+  transition: .3s;
+  border: solid 1px white;
 }
 
 /* OUTPUT =================================== */
@@ -31,11 +71,34 @@ header {
 #haiku-list {
   list-style: none;
   padding: 0;
+  width: 50%;
+  height: 70px;
+  
 }
-
+.haiku-list-item {
+  margin-top: -2px;
+  color: white;
+}
 /* HAIKU =================================== */
 
+/* INSTRUCTIONS ================================= */
+.fade-in-enter {
+  opacity: 0.01;
+}
 
+.fade-in-enter.fade-in-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.fade-in-leave {
+  opacity: 1;
+}
+
+.fade-in-leave.fade-in-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
 .twitter-stream {
   grid-column: 3;
   grid-row: 2;

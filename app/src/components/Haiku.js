@@ -33,20 +33,45 @@ class Haiku extends Component {
         })
         this.props.passRenderInstructions(3)
     }
+
     render () {
         return (
-            <ul id="haiku-list">
+            <div>
                 {this.props.visible && <h4>Your Haiku:</h4>}
-                <li className="haiku-list-item">{this.props.haiku[0]}</li>
-                <li className="haiku-list-item">{this.props.haiku[1]}</li>
-                <li className="haiku-list-item">{this.props.haiku[2]}</li>
-                {this.state.isEditVisible && <textarea defaultValue={this.props.haiku} onChange={(e) => {this.setHaiku(e)}} ref={(input) => {this.value = input}} ></textarea>}
-                {this.state.isEditVisible && <button onClick={() => {this.handleHaiku(this.state.userHaiku)}}>Tweet</button>}
-                {this.props.visible && <button onClick={this.toggleEdit}>Edit</button>}
-                {this.props.visible && <button onClick={() => {this.handleHaiku(`${this.props.haiku[0]}, ${this.props.haiku[1]}, ${this.props.haiku[2]}`)}}>Tweet</button>}
-            </ul>
+                
+                {this.state.isEditVisible ?( 
+                    <textarea defaultValue={this.props.haiku} 
+                    onChange={(e) => {this.setHaiku(e)}} ref={(input) => {this.value = input}} ></textarea>) :
+                <ul id="haiku-list">
+                    <li className="haiku-list-item">{this.props.haiku[0]}</li>
+                    <li className="haiku-list-item">{this.props.haiku[1]}</li>
+                    <li className="haiku-list-item">{this.props.haiku[2]}</li>
+                </ul>}
+
+                {this.state.isEditVisible ?( 
+                    <button 
+                    onClick={() => 
+                        {this.handleHaiku(this.state.userHaiku)
+                        }}
+                        className="button">TWEET</button>
+                ) : 
+                    this.props.visible && 
+                    <button 
+                    onClick={() => 
+                        {this.handleHaiku(
+                            `${this.props.haiku[0]}, 
+                            ${this.props.haiku[1]}, 
+                            ${this.props.haiku[2]}`)
+                        }}
+                    className="button">TWEET</button>}
+
+                {this.props.visible && 
+                    <button 
+                    onClick={this.toggleEdit}
+                    className="button">EDIT</button>}    
+            </div>
         )  
     } 
 }
-
+//this.props.renderInstructions
 export default Haiku

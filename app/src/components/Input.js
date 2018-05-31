@@ -120,7 +120,11 @@ class Input extends Component {
         case "error":
             return <h4>Please enter a valid, public username!</h4>
         case "none":
-            return <button type="get" id="get-button" onClick={() => this.getHaiku(this.state.tweets)}>Generate a Haiku</button>
+            return <button 
+            type="get" 
+            id="get-button" 
+            onClick={() => this.getHaiku(this.state.tweets)}
+            className="button">NEW HAIKU</button>
         default:
             return <div/>
         }
@@ -139,13 +143,20 @@ class Input extends Component {
             <section className="user-side">
                 <Instructions render={this.state.renderInstructions} />
                 <div className="input">
-                    <form ref={(input) => this.userForm = input} className="userName" onSubmit={(event) => this.enterUser(event)}>
-                        <input ref={(input) => this.user = input} type="text" htmlFor="username" name="username" />
-                        <input type="submit" id="submit-button" />
+                    <form ref={(input) => this.userForm = input} 
+                    className="user-input" 
+                    onSubmit={(event) => this.enterUser(event)} >
+                        <input ref={(input) => this.user = input} 
+                        type="text" htmlFor="username" 
+                        name="username" id="username" />
+                        <button 
+                        type="submit" id="submit-button" >LET'S GO</button>
                     </form>
                     {this.errorHandle(this.state.error)}
                 </div>
-                    <Output passRenderInstructions={this.passRenderInstructions} haiku={this.state.haiku} visible={this.state.visibleHaiku}/>
+                    <Output passRenderInstructions={this.passRenderInstructions} 
+                    haiku={this.state.haiku} 
+                    visible={this.state.visibleHaiku} />
             </section>
         </section>
         )
