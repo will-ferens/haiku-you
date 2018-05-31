@@ -19,7 +19,7 @@ class Haiku extends Component {
         })
     }
     handleHaiku(haiku){
-        fetch('http://localhost:8089/haiku', {
+        fetch('https://haiku-you-server.herokuapp.com/haiku', {
             method: 'POST',
             headers: {
                 "Accept": "application/json",

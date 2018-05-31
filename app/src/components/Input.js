@@ -26,7 +26,7 @@ class Input extends Component {
         this.setState({
             user: this.user.value,
         })
-        fetch('http://localhost:8089/user', {
+        fetch('https://haiku-you-server.herokuapp.com/user', {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
